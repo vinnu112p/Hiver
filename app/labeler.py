@@ -8,10 +8,9 @@ import sys
 import pandas as pd
 import streamlit as st
 
-st.set_page_config(page_title="Hiver Golden Set Labeler", layout="wide")
+st.set_page_config(page_title="Hiver Golden Set Audit Tool", layout="wide")
 
 GOLDEN_CSV = os.path.join("data", "golden", "golden_set.csv")
-CANDIDATES_CSV = os.path.join("data", "golden", "candidates_to_label.csv")
 
 INTENTS = [
     "billing_subscription",
@@ -26,65 +25,48 @@ INTENTS = [
 DECISIONS = ["auto_handle", "escalate"]
 DIFFICULTIES = ["normal", "ambiguous", "hard"]
 
-st.title("🎯 Hiver AI Support — Golden Set Annotation & Audit Tool")
-st.markdown("Use this tool to manually inspect, label, and audit customer tweets for ground-truth evaluation.")
+st.title("Hiver AI Support — Golden Set Annotation and Audit Tool")
+st.markdown("Inspect, audit, and modify customer evaluation cases for ground-truth benchmark analysis.")
 
-# Load datasets
-if not os.path.exists(CANDIDATES_CSV):
-    st.error(f"Candidate file not found at {CANDIDATES_CSV}. Run scripts/sample_golden_candidates.py first.")
+# Load dataset
+if not os.path.exists(GOLDEN_CSV):
+    st.error(f"Golden benchmark not found at {GOLDEN_CSV}.")
     st.stop()
 
-df_cand = pd.read_csv(CANDIDATES_CSV)
-
-if os.path.exists(GOLDEN_CSV):
-    df_golden = pd.read_csv(GOLDEN_CSV)
-else:
-    df_golden = pd.DataFrame(columns=["id", "text", "intent", "expected_decision", "difficulty", "notes"])
+df_golden = pd.read_csv(GOLDEN_CSV)
 
 # Progress metrics
 col_m1, col_m2, col_m3 = st.columns(3)
-col_m1.metric("Total Candidates", len(df_cand))
-col_m2.metric("Completed Labels", len(df_golden))
-col_m3.metric("Remaining", max(0, len(df_cand) - len(df_golden)))
+col_m1.metric("Total Golden Cases", len(df_golden))
+col_m2.metric("Auto-Handle Cases", len(df_golden[df_golden['expected_decision'] == 'auto_handle']))
+col_m3.metric("Escalation Cases", len(df_golden[df_golden['expected_decision'] == 'escalate']))
 
 st.divider()
 
 # Select case index to inspect / annotate
-idx = st.number_input("Case Index (0-199)", min_value=0, max_value=len(df_cand)-1, value=min(len(df_golden), len(df_cand)-1))
+idx = st.number_input("Case Index (0-199)", min_value=0, max_value=len(df_golden)-1, value=0)
 
-case_row = df_cand.iloc[idx]
+case_row = df_golden.iloc[idx]
 case_id = str(case_row["id"])
 text = str(case_row["text"])
-ref_response = str(case_row.get("support_response_reference", ""))
-tag = str(case_row.get("category_tag", ""))
-suggested_diff = str(case_row.get("target_difficulty", "normal"))
-
-# Check if already labeled
-existing_label = df_golden[df_golden["id"].astype(str) == case_id]
-is_already_labeled = len(existing_label) > 0
+cur_intent = str(case_row.get("intent", INTENTS[0]))
+cur_dec = str(case_row.get("expected_decision", "auto_handle"))
+cur_diff = str(case_row.get("difficulty", "normal"))
+cur_notes = str(case_row.get("notes", ""))
 
 st.subheader(f"Case #{idx} — ID: `{case_id}`")
 st.info(f"**Customer Message:**\n\n\"{text}\"")
 
-if ref_response and ref_response != 'nan':
-    with st.expander("Show Historical Brand Reply Reference"):
-        st.write(ref_response)
-
 with st.form("label_form"):
     col1, col2, col3 = st.columns(3)
 
-    default_intent = existing_label.iloc[0]["intent"] if is_already_labeled else INTENTS[0]
-    default_dec = existing_label.iloc[0]["expected_decision"] if is_already_labeled else ("escalate" if suggested_diff == "hard" else "auto_handle")
-    default_diff = existing_label.iloc[0]["difficulty"] if is_already_labeled else suggested_diff
-    default_notes = existing_label.iloc[0]["notes"] if is_already_labeled else f"Stratified sample: {tag}"
+    intent = col1.selectbox("Intent Label", INTENTS, index=INTENTS.index(cur_intent) if cur_intent in INTENTS else 0)
+    decision = col2.selectbox("Expected Decision", DECISIONS, index=DECISIONS.index(cur_dec) if cur_dec in DECISIONS else 0)
+    difficulty = col3.selectbox("Difficulty Tier", DIFFICULTIES, index=DIFFICULTIES.index(cur_diff) if cur_diff in DIFFICULTIES else 0)
 
-    intent = col1.selectbox("Intent Label", INTENTS, index=INTENTS.index(default_intent) if default_intent in INTENTS else 0)
-    decision = col2.selectbox("Expected Decision", DECISIONS, index=DECISIONS.index(default_dec) if default_dec in DECISIONS else 0)
-    difficulty = col3.selectbox("Difficulty Tier", DIFFICULTIES, index=DIFFICULTIES.index(default_diff) if default_diff in DIFFICULTIES else 0)
+    notes = st.text_input("Annotation Notes / Human Rationale", value=cur_notes)
 
-    notes = st.text_input("Annotation Notes / Human Rationale", value=str(default_notes))
-
-    submitted = st.form_submit_button("💾 Save Annotation")
+    submitted = st.form_submit_button("Save Annotation")
 
     if submitted:
         new_row = {

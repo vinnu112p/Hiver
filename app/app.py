@@ -18,9 +18,9 @@ from src.pipeline import SupportAgentPipeline
 
 st.set_page_config(page_title="Hiver AI Support Agent", layout="wide")
 
-st.title("🎧 Hiver AI Support Agent — Spotify Support")
+st.title("Hiver AI Support Agent — Spotify Support")
 st.markdown(
-    "A trustworthy, evidence-grounded AI customer support pipeline. "
+    "A reproducible, evidence-grounded AI customer support pipeline. "
     "Classifies intent, retrieves verified historical resolutions, synthesizes safe replies, and enforces multi-signal escalation."
 )
 
@@ -31,21 +31,21 @@ def load_pipeline():
 pipeline = load_pipeline()
 
 # Quick test query buttons
-st.subheader("💡 Try Example Customer Inquiries:")
+st.subheader("Sample Queries:")
 col_ex1, col_ex2, col_ex3, col_ex4 = st.columns(4)
 
 default_msg = "I was charged twice for premium this month"
-if col_ex1.button("💳 Double Charge (Dispute)"):
+if col_ex1.button("Double Charge (Dispute)"):
     default_msg = "I was charged twice for premium this month, please refund me!"
-if col_ex2.button("🎵 Playback Pausing (FAQ)"):
+if col_ex2.button("Playback Pausing (FAQ)"):
     default_msg = "Songs keep stopping after 10 seconds on my iPhone"
-if col_ex3.button("🚨 Compromised Account (Security)"):
+if col_ex3.button("Compromised Account (Security)"):
     default_msg = "Someone hacked my account and changed the email address"
-if col_ex4.button("💥 Desktop Crash (Technical)"):
+if col_ex4.button("Desktop Crash (Technical)"):
     default_msg = "Spotify keeps crashing immediately when opened on Windows 10"
 
-query_text = st.text_area("Enter Customer Message:", value=default_msg, height=90)
-analyze_btn = st.button("🚀 Analyze Message", type="primary")
+query_text = st.text_area("Customer Message:", value=default_msg, height=90)
+analyze_btn = st.button("Analyze Message", type="primary")
 
 if analyze_btn or query_text:
     with st.spinner("Analyzing message through grounded pipeline..."):
@@ -64,18 +64,18 @@ if analyze_btn or query_text:
 
     # Escalation Decision Banner
     if result["decision"] == "escalate":
-        st.error(f"⚠️ **ACTION: ESCALATE TO HUMAN SPECIALIST**\n\n**Reason:** {result['reason']}")
+        st.error(f"**ACTION: ESCALATE TO HUMAN SPECIALIST**\n\n**Reason:** {result['reason']}")
     else:
-        st.success(f"✅ **ACTION: AUTO-HANDLE**\n\n**Reason:** {result['reason']}")
+        st.success(f"**ACTION: AUTO-HANDLE**\n\n**Reason:** {result['reason']}")
 
     # Drafted Reply Section
-    st.subheader("📝 Drafted Grounded Response")
+    st.subheader("Drafted Grounded Response")
     st.info(result["reply"])
     if result.get("grounding_summary"):
-        st.caption(f"🔎 Grounding Context: {result['grounding_summary']}")
+        st.caption(f"Grounding Context: {result['grounding_summary']}")
 
     # Historical Evidence Section
-    st.subheader("📚 Retrieved Historical Support Precedents (Grounding Evidence)")
+    st.subheader("Retrieved Historical Support Precedents (Grounding Evidence)")
     if not result["retrieved_cases"]:
         st.warning("No historical cases met the minimum relevance threshold.")
     else:
