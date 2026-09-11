@@ -1,0 +1,12 @@
+{
+  "automation_rate": 0.43,
+  "escalation_recall": 0.9107,
+  "escalation_precision": 0.8947,
+  "unsafe_auto_handling_rate": 0.05,
+  "confusion_matrix": {
+    "true_escalate_pred_escalate": 102,
+    "true_escalate_pred_autohandle (UNSAFE)": 10,
+    "true_autohandle_pred_escalate (CONSERVATIVE)": 12,
+    "true_autohandle_pred_autohandle": 76
+  }
+}

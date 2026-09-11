@@ -1,0 +1,25 @@
+# Final Quality Assurance Checklist — Hiver AI Support System
+
+- [x] **Dataset instructions work**: Verified in `scripts/download_data.py` and `data/README.md`.
+- [x] **Data preprocessing works**: Principled whitespace, mention, and HTML entity handling in `src/preprocess.py`; preserves negations and technical keywords.
+- [x] **Conversation reconstruction works**: Two-pass streaming in `src/reconstruct_conversations.py` produced 41,272 validated dialogue pairs from 2.81M rows.
+- [x] **Intent taxonomy documented**: 7 empirical intents documented in `INTENT_TAXONOMY.md` and `src/intents.py`.
+- [x] **Golden set exists**: 200 curated, stratified evaluation cases in `data/golden/golden_set.csv` (123 normal, 42 ambiguous, 35 hard).
+- [x] **Majority baseline exists**: Evaluated in `src/baseline_majority.py` (Accuracy: 42.50%, Macro F1: 0.0852) -> `evaluation/baseline_majority.json`.
+- [x] **TF-IDF baseline exists**: Evaluated in `src/baseline_tfidf.py` (Accuracy: 93.50%, Macro F1: 0.9245) -> `evaluation/baseline_tfidf.json` and `evaluation/confusion_matrix.png`.
+- [x] **Final classifier works**: Confidence-gated hybrid architecture in `src/classifier.py`.
+- [x] **Retrieval works**: Dense vector indexing (10,000 cases, 384 dimensions) using `all-MiniLM-L6-v2` + FAISS `IndexFlatIP` in `src/retriever.py`.
+- [x] **Grounded generation works**: Synthesizes replies strictly from retrieved historical precedent cases in `src/generator.py` with zero hallucinated policies.
+- [x] **Escalation works**: Multi-signal policy engine in `src/escalation.py` evaluating confidence, similarity, security risk, and explicit human requests.
+- [x] **Automated evaluation works**: End-to-end evaluation harness in `src/evaluate.py` generates `evaluation/results.json` and `evaluation/results.md`.
+- [x] **LLM judge works**: 5-dimension rubric judge in `src/judge.py` scoring Relevance, Groundedness, Helpfulness, Style, and Safety.
+- [x] **Human/judge agreement documented**: Calibration across 30 cases in `src/calibrate_judge.py` -> `evaluation/judge_agreement.json` (100% within-1 agreement, Spearman rho: 0.5160).
+- [x] **Failure analysis exists**: Top 5 empirical failures analyzed with root causes and hypotheses in `evaluation/failure_analysis.md`.
+- [x] **Misleading headline section exists**: Mandatory Section 11 thoroughly articulated in `REPORT.md`.
+- [x] **Decision log exists**: 14 non-obvious engineering decisions documented with reasons and trade-offs in `DECISION_LOG.md`.
+- [x] **README complete**: Comprehensive quickstart, architecture diagrams, and reproduction guide in `README.md`.
+- [x] **Report complete**: Comprehensive 6-page equivalent technical report in `REPORT.md`.
+- [x] **Tests pass**: 19 unit tests across all components executed and passing (`pytest tests/`).
+- [x] **Demo works**: Interactive Streamlit demo in `app/app.py` and annotation dashboard in `app/labeler.py`.
+- [x] **No secrets committed**: `.env.example` provided; `.env` added to `.gitignore`.
+- [x] **No full dataset committed**: `data/raw/` added to `.gitignore` to prevent committing raw 492 MB CSV.

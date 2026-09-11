@@ -1,0 +1,70 @@
+{
+  "evaluation_dataset": "data\\golden\\golden_set.csv",
+  "sample_size": 200,
+  "elapsed_seconds": 7.17,
+  "intent_metrics": {
+    "accuracy": 0.935,
+    "macro_f1": 0.9245,
+    "per_class": {
+      "account_access_security": {
+        "precision": 0.8333,
+        "recall": 1.0,
+        "f1_score": 0.9091
+      },
+      "app_crash_technical": {
+        "precision": 1.0,
+        "recall": 0.7143,
+        "f1_score": 0.8333
+      },
+      "audio_playback_issue": {
+        "precision": 0.9111,
+        "recall": 0.9762,
+        "f1_score": 0.9425
+      },
+      "billing_subscription": {
+        "precision": 0.8824,
+        "recall": 0.9375,
+        "f1_score": 0.9091
+      },
+      "cancellation_refund": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0
+      },
+      "library_playlist_content": {
+        "precision": 0.9375,
+        "recall": 0.9375,
+        "f1_score": 0.9375
+      },
+      "other_support": {
+        "precision": 0.963,
+        "recall": 0.9176,
+        "f1_score": 0.9398
+      }
+    }
+  },
+  "retrieval_metrics": {
+    "mean_top1_similarity": 0.7024,
+    "median_top1_similarity": 0.709
+  },
+  "reply_quality_metrics": {
+    "relevance": 4.25,
+    "groundedness": 4.99,
+    "helpfulness": 4.25,
+    "style": 5.0,
+    "unsupported_claims": 5.0,
+    "overall": 4.75
+  },
+  "escalation_safety_metrics": {
+    "automation_rate": 0.43,
+    "escalation_recall": 0.9107,
+    "escalation_precision": 0.8947,
+    "unsafe_auto_handling_rate": 0.05,
+    "confusion_matrix": {
+      "true_escalate_pred_escalate": 102,
+      "true_escalate_pred_autohandle (UNSAFE)": 10,
+      "true_autohandle_pred_escalate (CONSERVATIVE)": 12,
+      "true_autohandle_pred_autohandle": 76
+    }
+  }
+}

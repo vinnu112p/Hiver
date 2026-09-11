@@ -1,0 +1,123 @@
+{
+  "dataset_name": "Customer Support on Twitter (thoughtvector/customer-support-on-twitter)",
+  "file_path": "data\\raw\\twcs.csv",
+  "file_size_mb": 492.58,
+  "total_rows": 2811774,
+  "columns": [
+    "tweet_id",
+    "author_id",
+    "inbound",
+    "created_at",
+    "text",
+    "response_tweet_id",
+    "in_response_to_tweet_id"
+  ],
+  "missing_values": {
+    "tweet_id": 0,
+    "author_id": 0,
+    "inbound": 0,
+    "created_at": 0,
+    "text": 0,
+    "response_tweet_id": 1040629,
+    "in_response_to_tweet_id": 794335
+  },
+  "inbound_distribution": {
+    "inbound_customer": 1537843,
+    "outbound_brand": 1273931,
+    "inbound_percentage": 54.69
+  },
+  "response_linkages": {
+    "has_response_tweet_id": 1771145,
+    "has_in_response_to_tweet_id": 2017439,
+    "percentage_with_direct_parent": 71.75
+  },
+  "text_length_chars_sampled": {
+    "mean": 115.59,
+    "median": 116.0,
+    "std": 55.48,
+    "min": 2,
+    "max": 455
+  },
+  "top_20_brand_support_accounts": [
+    {
+      "brand": "AmazonHelp",
+      "outbound_replies": 169840
+    },
+    {
+      "brand": "AppleSupport",
+      "outbound_replies": 106860
+    },
+    {
+      "brand": "Uber_Support",
+      "outbound_replies": 56270
+    },
+    {
+      "brand": "SpotifyCares",
+      "outbound_replies": 43265
+    },
+    {
+      "brand": "Delta",
+      "outbound_replies": 42253
+    },
+    {
+      "brand": "Tesco",
+      "outbound_replies": 38573
+    },
+    {
+      "brand": "AmericanAir",
+      "outbound_replies": 36764
+    },
+    {
+      "brand": "TMobileHelp",
+      "outbound_replies": 34317
+    },
+    {
+      "brand": "comcastcares",
+      "outbound_replies": 33031
+    },
+    {
+      "brand": "British_Airways",
+      "outbound_replies": 29361
+    },
+    {
+      "brand": "SouthwestAir",
+      "outbound_replies": 28977
+    },
+    {
+      "brand": "VirginTrains",
+      "outbound_replies": 27817
+    },
+    {
+      "brand": "Ask_Spectrum",
+      "outbound_replies": 25860
+    },
+    {
+      "brand": "XboxSupport",
+      "outbound_replies": 24557
+    },
+    {
+      "brand": "sprintcare",
+      "outbound_replies": 22381
+    },
+    {
+      "brand": "hulu_support",
+      "outbound_replies": 21872
+    },
+    {
+      "brand": "sainsburys",
+      "outbound_replies": 19466
+    },
+    {
+      "brand": "GWRHelp",
+      "outbound_replies": 19364
+    },
+    {
+      "brand": "AskPlayStation",
+      "outbound_replies": 19098
+    },
+    {
+      "brand": "ChipotleTweets",
+      "outbound_replies": 18749
+    }
+  ]
+}

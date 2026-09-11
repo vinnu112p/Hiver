@@ -1,0 +1,245 @@
+{
+  "sample_size_analyzed": 10000,
+  "total_available_messages": 41272,
+  "empirical_theme_distribution": {
+    "other_support": {
+      "count": 3369,
+      "percentage": 33.69
+    },
+    "audio_playback_issue": {
+      "count": 2376,
+      "percentage": 23.76
+    },
+    "billing_subscription": {
+      "count": 1904,
+      "percentage": 19.04
+    },
+    "account_access_security": {
+      "count": 1068,
+      "percentage": 10.68
+    },
+    "app_crash_technical": {
+      "count": 783,
+      "percentage": 7.83
+    },
+    "library_playlist_content": {
+      "count": 430,
+      "percentage": 4.3
+    },
+    "cancellation_refund": {
+      "count": 70,
+      "percentage": 0.7
+    }
+  },
+  "top_diagnostic_ngrams": [
+    {
+      "ngram": "user",
+      "score": 531.95
+    },
+    {
+      "ngram": "spotify",
+      "score": 398.31
+    },
+    {
+      "ngram": "https",
+      "score": 345.49
+    },
+    {
+      "ngram": "account",
+      "score": 263.0
+    },
+    {
+      "ngram": "premium",
+      "score": 234.18
+    },
+    {
+      "ngram": "help",
+      "score": 225.57
+    },
+    {
+      "ngram": "app",
+      "score": 218.02
+    },
+    {
+      "ngram": "just",
+      "score": 196.53
+    },
+    {
+      "ngram": "thanks",
+      "score": 188.65
+    },
+    {
+      "ngram": "songs",
+      "score": 185.92
+    },
+    {
+      "ngram": "music",
+      "score": 177.01
+    },
+    {
+      "ngram": "thank",
+      "score": 152.02
+    },
+    {
+      "ngram": "hey",
+      "score": 140.88
+    },
+    {
+      "ngram": "song",
+      "score": 134.97
+    },
+    {
+      "ngram": "playlist",
+      "score": 134.17
+    },
+    {
+      "ngram": "like",
+      "score": 133.16
+    },
+    {
+      "ngram": "need",
+      "score": 131.92
+    },
+    {
+      "ngram": "hi",
+      "score": 124.29
+    },
+    {
+      "ngram": "album",
+      "score": 124.25
+    },
+    {
+      "ngram": "don",
+      "score": 121.06
+    },
+    {
+      "ngram": "ve",
+      "score": 117.04
+    },
+    {
+      "ngram": "iphone",
+      "score": 112.89
+    },
+    {
+      "ngram": "play",
+      "score": 111.04
+    },
+    {
+      "ngram": "guys",
+      "score": 106.7
+    },
+    {
+      "ngram": "family",
+      "score": 105.21
+    },
+    {
+      "ngram": "new",
+      "score": 105.19
+    },
+    {
+      "ngram": "want",
+      "score": 104.04
+    },
+    {
+      "ngram": "user user",
+      "score": 100.85
+    },
+    {
+      "ngram": "email",
+      "score": 97.65
+    },
+    {
+      "ngram": "update",
+      "score": 97.09
+    },
+    {
+      "ngram": "phone",
+      "score": 93.79
+    },
+    {
+      "ngram": "work",
+      "score": 93.69
+    },
+    {
+      "ngram": "does",
+      "score": 93.55
+    },
+    {
+      "ngram": "time",
+      "score": 92.87
+    },
+    {
+      "ngram": "student",
+      "score": 92.31
+    },
+    {
+      "ngram": "listen",
+      "score": 91.54
+    },
+    {
+      "ngram": "add",
+      "score": 91.28
+    },
+    {
+      "ngram": "version",
+      "score": 90.09
+    },
+    {
+      "ngram": "playlists",
+      "score": 89.44
+    },
+    {
+      "ngram": "working",
+      "score": 88.55
+    },
+    {
+      "ngram": "know",
+      "score": 88.0
+    },
+    {
+      "ngram": "tried",
+      "score": 86.8
+    },
+    {
+      "ngram": "fix",
+      "score": 85.49
+    },
+    {
+      "ngram": "did",
+      "score": 83.54
+    },
+    {
+      "ngram": "hey user",
+      "score": 81.26
+    },
+    {
+      "ngram": "got",
+      "score": 80.24
+    },
+    {
+      "ngram": "available",
+      "score": 79.59
+    },
+    {
+      "ngram": "doesn",
+      "score": 79.57
+    },
+    {
+      "ngram": "charged",
+      "score": 76.73
+    },
+    {
+      "ngram": "make",
+      "score": 76.3
+    }
+  ],
+  "proposed_7_intent_taxonomy": [
+    "billing_subscription",
+    "cancellation_refund",
+    "account_access_security",
+    "audio_playback_issue",
+    "app_crash_technical",
+    "library_playlist_content",
+    "other_support"
+  ]
+}

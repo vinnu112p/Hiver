@@ -1,0 +1,50 @@
+[
+  {
+    "id": "query_1",
+    "text": "I was charged twice for premium this month, please refund me!",
+    "expected_intent": "billing_subscription",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "query_2",
+    "text": "Every song stops playing after 10 seconds on my iPhone",
+    "expected_intent": "audio_playback_issue",
+    "expected_decision": "auto_handle"
+  },
+  {
+    "id": "query_3",
+    "text": "Someone changed the email on my Spotify account and I'm locked out",
+    "expected_intent": "account_access_security",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "query_4",
+    "text": "The Spotify desktop app keeps crashing immediately on Windows 10",
+    "expected_intent": "app_crash_technical",
+    "expected_decision": "auto_handle"
+  },
+  {
+    "id": "query_5",
+    "text": "All songs in my workout playlist disappeared after the update",
+    "expected_intent": "library_playlist_content",
+    "expected_decision": "auto_handle"
+  },
+  {
+    "id": "query_6",
+    "text": "I want to cancel my subscription immediately, the button is missing",
+    "expected_intent": "cancellation_refund",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "query_7",
+    "text": "I want to talk to a real human manager right now",
+    "expected_intent": "other_support",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "query_8",
+    "text": "How do I sign up for the 50% student discount?",
+    "expected_intent": "billing_subscription",
+    "expected_decision": "auto_handle"
+  }
+]

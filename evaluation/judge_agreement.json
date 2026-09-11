@@ -1,0 +1,9 @@
+{
+  "sample_size": 30,
+  "exact_agreement_rate": 0.7,
+  "within_1_tolerance_rate": 1.0,
+  "mean_absolute_error": 0.3,
+  "spearman_correlation": 0.516,
+  "p_value": 0.003511,
+  "summary": "The judge exhibits 100.0% within-1 agreement with human raters (Exact: 70.0%, MAE: 0.30, Spearman rho: 0.52)."
+}
