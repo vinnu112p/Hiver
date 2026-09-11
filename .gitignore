@@ -42,3 +42,13 @@ data/processed/*.bin
 .vscode/
 .idea/
 *.swp
+
+# Internal local notes and redundant markdown files (kept locally, omitted from GitHub)
+FINAL_CHECKLIST.md
+PROJECT_COMPLETION.md
+PROJECT_STATUS.md
+INTENT_TAXONOMY.md
+REPORT.md
+DECISION_LOG.md
+evaluation/*.md
+

@@ -110,7 +110,7 @@ The 7 intents were derived empirically via frequency and n-gram clustering acros
 | `library_playlist_content` | 4.3% | Low | `auto_handle` | Missing tracks, playlist recovery, local files sync |
 | `other_support` | 33.7% | Medium | `escalate` | Out-of-scope inquiries, community ideas, compliments, vague inputs |
 
-*Detailed criteria, boundary definitions, and negative examples are documented in [INTENT_TAXONOMY.md](INTENT_TAXONOMY.md).*
+*Intent definitions, inclusion/exclusion rules, and operational risk tiers are codified in `src/intents.py`.*
 
 ---
 
@@ -269,16 +269,14 @@ graph TD
 ## Failure Analysis and Limitations
 
 ### Top 5 Empirical Failure Modes
-1. **Entangled Multi-Intent Inquiries**: User requests cancellation while blocked by a deleted Facebook SSO login (`case_662930_662929`). The system auto-handled cancellation guidance without resolving the credential blocker.
-2. **Household Hardware Ambiguity**: Mentions of Bluetooth speakers for children fragmented classification probabilities between playback and Family Plan subscription (`case_560992_560991`).
-3. **Feature Requests Misclassified as Bugs**: Constructive community suggestions sharing technical terms (`android`, `queue`, `play`) triggered low-confidence playback classification (`case_492392_492391`).
-4. **Transport Network Errors Masked as Login Errors**: Offline device states trigger conservative login security escalation rules (`case_631985_631984`).
-5. **Cross-Account Asset Transfers**: Moving playlists between unlinked accounts spans multiple subsystems without an atomic intent category (`case_617479_617478`).
-
-*Detailed failure traces, hypotheses, and proposed improvements are documented in [evaluation/failure_analysis.md](evaluation/failure_analysis.md).*
+1. **Entangled Multi-Intent Inquiries**: User requests cancellation while blocked by a deleted Facebook SSO login (`case_662930_662929`). The system auto-handled cancellation guidance without resolving the credential blocker. *Fix*: Add prerequisite authentication blocker detection.
+2. **Household Hardware Ambiguity**: Mentions of Bluetooth speakers for children fragmented classification probabilities between playback and Family Plan subscription (`case_560992_560991`). *Fix*: Fallback to LLM disambiguation when top-2 class probabilities are within 5%.
+3. **Feature Requests Misclassified as Bugs**: Constructive community suggestions sharing technical terms (`android`, `queue`, `play`) triggered low-confidence playback classification (`case_492392_492391`). *Fix*: Add discourse mood feature to distinguish suggestions from operational bugs.
+4. **Transport Network Errors Masked as Login Errors**: Offline device states trigger conservative login security escalation rules (`case_631985_631984`). *Fix*: Distinguish transport-level network errors from actual credential lockouts.
+5. **Cross-Account Asset Transfers**: Moving playlists between unlinked accounts spans multiple subsystems without an atomic intent category (`case_617479_617478`). *Fix*: Add collaborative playlist migration precedents to the retrieval index.
 
 ### What Is Misleading About Our Headline Number?
-*(From Section 11 of [REPORT.md](REPORT.md))*
+A critical analysis of the 93.5% Accuracy and 43.0% Automation Rate:
 - **Intent Accuracy != Resolution Safety**: A model can predict `billing_subscription` with 95% confidence and still draft an ungrounded or risky response. Real-world safety depends on the escalation engine and evidence verification.
 - **Curated Golden Sets Mask Live Traffic Drift**: Real production traffic experiences abrupt shifts during outages, billing system upgrades, or app updates.
 - **Historical Twitter Data Has Survivorship Bias**: Only captures users who chose to publicly tweet at support; silent drop-offs and users resolved via in-app help are omitted.
@@ -288,12 +286,22 @@ graph TD
 
 ## Engineering Decisions
 
-Key decisions documented in [DECISION_LOG.md](DECISION_LOG.md):
-- **Decision 1: Single Brand Focus (`SpotifyCares`)**: Eliminated cross-brand noise and PII leakage.
-- **Decision 3: Preserving Negations**: Preserved tokens like `can't` and `not` because negation flips intent entirely.
-- **Decision 5: Strict Temporal Splitting**: Partitioned data strictly by timestamp (older 80% to knowledge base; newer 20% to evaluation pool) to prevent future data leakage.
-- **Decision 7: TF-IDF Primary with Hybrid Fallback**: Delivered 93.5% accuracy with sub-millisecond latency and zero API cost.
-- **Decision 11: Asymmetric Escalation Priority**: Optimized Escalation Recall (91.1%) over raw automation volume (43.0%) to minimize unsafe auto-handling.
+The project incorporates 14 non-obvious engineering decisions and trade-offs:
+
+1. **Single Brand Focus (`SpotifyCares`)**: Support policies, vocabularies, and escalation thresholds are brand-specific. Cross-brand pooling induces catastrophic retrieval noise and PII leaks.
+2. **Two-Pass Streaming Conversation Reconstruction**: Pass 1 indexes parent IDs of brand replies; Pass 2 streams customer tweets to match. Reconstructs 41k pairs across 2.8M rows in 33s with < 500 MB RAM.
+3. **Preserving Negations**: Preserved tokens like `can't`, `not`, and `never` during preprocessing because negation flips support meaning entirely ("can log in" vs "cannot log in").
+4. **Empirical 7-Intent Taxonomy with `other_support`**: Discovered intents via n-gram clustering and added an explicit catch-all to prevent forcing out-of-scope queries into known buckets.
+5. **Strict Temporal Splitting**: Split data chronologically (older 80% to knowledge base; newer 20% to eval pool) to prevent future data leakage in retrieval.
+6. **Stratified Golden Set Sampling**: Sampled 200 cases across normal (70%), ambiguous (15%), and hard (15%) strata to prevent easy common queries from masking edge-case failures.
+7. **TF-IDF Primary Classifier**: Delivered 93.5% accuracy with sub-millisecond latency (< 1ms) and zero API cost, reserving LLMs strictly for low-confidence fallbacks.
+8. **FAISS Inner Product Dense Retrieval**: Used `all-MiniLM-L6-v2` with normalized inner product for exact cosine similarity search on 10k vectors in under 2ms on CPU.
+9. **Intent-Guided Retrieval Prioritization**: Filtered retrieval candidates by predicted intent before computing global semantic similarity, preventing cross-domain retrieval errors.
+10. **Evidence-Anchored Generation**: Enforced that the generator draft replies strictly from retrieved human-agent precedents, achieving zero hallucinated policies or promises.
+11. **Asymmetric Escalation Policy**: Optimized Escalation Recall (91.1%) over raw automation volume (43.0%) because false auto-handling is far more damaging than unnecessary escalation.
+12. **Decoupled Evaluation Harness**: Evaluated classification accuracy and generation quality separately to avoid conflating routing accuracy with reply groundedness.
+13. **Calibrated Rubric Judge**: Implemented a 5-dimension rubric evaluator validated against human ratings, showing 100% within-1 agreement and significant rank correlation.
+14. **Interactive Streamlit Demo**: Built lightweight, zero-overhead Streamlit apps for testing (`app/app.py`) and golden set auditing (`app/labeler.py`) without frontend build bloat.
 
 ---
 
@@ -314,14 +322,14 @@ Hiver/
 |-- evaluation/
 |   |-- baseline_majority.json     # Baseline 1 evaluation results
 |   |-- baseline_tfidf.json        # Baseline 2 evaluation results
-|   |-- brand_comparison.md        # Multi-brand comparative analysis
+|   |-- brand_comparison.json      # Multi-brand comparative analysis
 |   |-- confusion_matrix.png       # Baseline 2 Confusion Matrix visualization
-|   |-- data_profile.md            # Profiling of 2.81M raw tweets
+|   |-- data_profile.json          # Profiling of 2.81M raw tweets
 |   |-- escalation_results.json    # Escalation recall and safety metrics
-|   |-- failure_analysis.md        # Top 5 empirical failure modes and hypotheses
 |   |-- human_judge.csv            # 30-case human vs judge calibration dataset
+|   |-- intent_discovery.json      # Empirical n-gram discovery analysis
 |   |-- judge_agreement.json       # Human-judge statistical alignment metrics
-|   `-- results.md                 # Complete headline evaluation report
+|   `-- results.json               # Complete headline evaluation metrics
 |-- examples/
 |   `-- sample_queries.json        # CLI query examples
 |-- scripts/
@@ -346,23 +354,21 @@ Hiver/
 |   |-- retriever.py               # MiniLM-L6-v2 + FAISS vector retriever
 |   `-- split_data.py              # Chronological train/eval partitioner
 |-- tests/                         # PyTest suite (19 unit tests, all passing)
-|-- DECISION_LOG.md                # 14 engineering decisions and trade-offs
-|-- FINAL_CHECKLIST.md             # Quality assurance verification checklist
-|-- INTENT_TAXONOMY.md             # Detailed taxonomy specifications
-|-- PROJECT_COMPLETION.md          # 10 interview questions and project summary
-|-- REPORT.md                      # Comprehensive technical report
 |-- requirements.txt               # Dependency specifications
-`-- README.md                      # Primary project guide
+|-- .gitignore                     # Git exclusion rules
+|-- .env.example                   # Environment configuration template
+`-- README.md                      # Primary project guide and report
 ```
 
 ---
 
-## Documentation Index
+## Deliverables and Verification Index
 
-- **Technical Report**: [`REPORT.md`](REPORT.md)
-- **Engineering Decisions**: [`DECISION_LOG.md`](DECISION_LOG.md)
-- **Intent Taxonomy**: [`INTENT_TAXONOMY.md`](INTENT_TAXONOMY.md)
 - **Golden Benchmark Data**: [`data/golden/golden_set.csv`](data/golden/golden_set.csv)
-- **Failure Analysis**: [`evaluation/failure_analysis.md`](evaluation/failure_analysis.md)
-- **Interview Preparation Guide**: [`PROJECT_COMPLETION.md`](PROJECT_COMPLETION.md)
+- **Evaluation Metrics JSON**: [`evaluation/results.json`](evaluation/results.json)
+- **Escalation Safety JSON**: [`evaluation/escalation_results.json`](evaluation/escalation_results.json)
 - **Judge Agreement Metrics**: [`evaluation/judge_agreement.json`](evaluation/judge_agreement.json)
+- **Confusion Matrix**: [`evaluation/confusion_matrix.png`](evaluation/confusion_matrix.png)
+- **Interactive Demo**: `streamlit run app/app.py`
+- **Annotation Dashboard**: `streamlit run app/labeler.py`
+- **Unit Test Suite**: `python -m pytest tests/`
